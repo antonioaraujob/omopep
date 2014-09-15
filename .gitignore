@@ -1,0 +1,8 @@
+*.o
+*~
+moc_*
+omopep
+ui_*
+Makefile
+*.pro.user
+doc/

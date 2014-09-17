@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "simulation.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -28,9 +30,19 @@ public:
      */
     ~MainWindow();
 
+    /**
+     * @brief Valida los parametros del algoritmo en la interfaz grafica
+     * @return si todos los parametros estan establecidos
+     */
+    bool validateFields();
 
 private:
     Ui::MainWindow *ui;
+
+    /**
+     * @brief Objeto Simulation que abstrae todo el algoritmo cultural
+     */
+    Simulation * simulation;
 
 public slots:
 

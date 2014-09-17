@@ -17,11 +17,11 @@ LIBS += -lsqlite3
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        individual.cpp \
-    simulation.cpp
+    simulation.cpp \
+    particle.cpp
 
 HEADERS  += mainwindow.h \
-    simulation.h
-        individual.h
+    simulation.h \
+    particle.h
 
 FORMS    += mainwindow.ui

@@ -5,6 +5,9 @@
 #include <QList>
 
 #include "particle.h"
+#include "globalrepository.h"
+#include "particlerepository.h"
+
 
 /**
  * @brief Clase que modela la simulacion para el algoritmo cultural
@@ -61,6 +64,11 @@ private:
      * @brief Lista de particulas
      */
     QList<Particle *> particleList;
+
+
+    GlobalRepository * gRepository;
+
+    ParticleRepository * pRepository;
 
 public:
 

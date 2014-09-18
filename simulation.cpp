@@ -26,6 +26,10 @@ Simulation::Simulation(int cognitiveParameter, int socialParameter,
     iterations = maxIterations;
 
     currentIteration = 0;
+
+    gRepository = new GlobalRepository();
+
+    pRepository = new ParticleRepository();
 }
 
 Simulation::~Simulation()
@@ -37,6 +41,8 @@ void Simulation::initializeParticles()
 
     Particle * particle;
 
+
+
     // inicializacion de la poblacion
     for (int i = 0; i < particles; i++)
     {
@@ -46,9 +52,22 @@ void Simulation::initializeParticles()
         particleList.append(particle);
 
         // verificar repositorio global
+        // verificar si la particula NO ES DOMINADA por cada particula del repositorio global
+        if (!gRepository->isNewParticleDominatedByGlobalRepository(particle))
+        {
+            gRepository->addNonDominatedParticle(particle);
+
+            gRepository->eliminateDominatedParticles();
+
+        }
+        QList<Particle*> list;
+        list.append(particle);
+        pRepository->addParticle(particle, list);
+
 
 
         // verificar repositorio local
+        // verificar si la particula NO ES DOMINADA por cada particula de su repositorio
 
 
 

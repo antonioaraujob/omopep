@@ -18,10 +18,14 @@ LIBS += -lsqlite3
 SOURCES += main.cpp\
         mainwindow.cpp \
     simulation.cpp \
-    particle.cpp
+    particle.cpp \
+    globalrepository.cpp \
+    particlerepository.cpp
 
 HEADERS  += mainwindow.h \
     simulation.h \
-    particle.h
+    particle.h \
+    globalrepository.h \
+    particlerepository.h
 
 FORMS    += mainwindow.ui

@@ -483,6 +483,13 @@ double Particle::probabilityDelayLessThanMinCT(double delay)
     return probability;
 }
 
+void Particle::setVelocitity(int position, double velocityValue)
+{
+    velocitityList.replace(position, velocityValue);
+}
 
 
-
+double Particle::getVelocity(int position)
+{
+    return velocitityList.at(position);
+}

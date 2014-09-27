@@ -141,4 +141,10 @@ void GlobalRepository::eliminateDominatedParticles()
 
 
 
-
+Particle * GlobalRepository::getRandomParticle()
+{
+    int low = 0;
+    int high = nonDominatedParticlesList.count()-1;
+    int randomPosition = qrand() % ((high + 1) - low) + low;
+    return nonDominatedParticlesList.at(randomPosition);
+}

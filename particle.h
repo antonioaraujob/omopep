@@ -248,6 +248,20 @@ public:
      */
     double probabilityDelayLessThanMinCT(double delay);
 
+    /**
+     * @brief Establece el valor de la velocidad para el componente de la posicion pasada como
+     * primer argumento
+     * @param position posicion del componente dentro de la lista de velocidades
+     * @param velocityValue valor de la velocidad para el componente
+     */
+    void setVelocitity(int position, double velocityValue);
+
+    /**
+     * @brief Retorna el valor de la velocidad del componente en la posicion pasada como argumento
+     * @param position posicion del componente
+     * @return valor de la velocidad del componente en la posicion pasada como argumento
+     */
+    double getVelocity(int position);
 
 };
 

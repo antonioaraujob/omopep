@@ -76,29 +76,28 @@ void MainWindow::executeAlgorithm()
                                              ui->lineEditParticlesParameter->text().toInt(),
                                              ui->lineEditIterationsParameter->text().toInt());
 
-
     // inicializar las particulas
+    // (la inicializacion de los repositorios (global y locales) tambien se ejecuta en este paso)
     simulation->initializeParticles();
 
-
-    // inicializar repositorio global
-
-
-    // inicializar repositorio
 
     // repetir por el numero maximo de generaciones
     do{
 
+        // actualizar las particulas
+        simulation->updateParticles();
 
 
+        // evaluar las particulas
+
+
+
+        // incrementar el valor de la iteracion
         simulation->incrementIteration();
 
     }while(!simulation->stopEvolution()); // fin de la repeticion
 
     qDebug("...terminó la simulación.");
-
-
-
 }
 
 

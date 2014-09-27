@@ -57,15 +57,33 @@ public:
     bool isParticleInGlobalRepository(Particle * particle);
 
 
+    /**
+     * @brief Retorna si el primer argumento domina al segundo
+     * @param xj particula
+     * @param xi particula
+     * @return Retorna si el primer argumento domina al segundo
+     */
     bool particleDominate(Particle * xj, Particle * xi);
 
-
+    /**
+     * @brief Retorna si la particula pasada como argumento esta dominada por alguna del
+     * repositorio
+     * @param newParticle particula a evaluar si es dominada
+     * @return si la particula pasada como argumento esta dominada por alguna del repositorio
+     */
     bool isNewParticleDominatedByGlobalRepository(Particle * newParticle);
 
-
+    /**
+     * @brief Elimina las particulas dominadas del repositorio
+     */
     void eliminateDominatedParticles();
 
 
+    /**
+     * @brief Retorna una particula aleatoria del repositorio
+     * @return una particula aleatoria del repositorio
+     */
+    Particle * getRandomParticle();
 };
 
 #endif // GLOBALREPOSITORY_H

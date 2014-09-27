@@ -18,22 +18,22 @@ class Simulation
 private:
 
     /**
-     * @brief cognitive
+     * @brief Parametro cognitivo
      */
     int cognitive;
 
     /**
-     * @brief social
+     * @brief Parametro social
      */
     int social;
 
     /**
-     * @brief inertia
+     * @brief Parametro inertia
      */
     double inertia;
 
     /**
-     * @brief maxSpeed
+     * @brief Parametro maxima velocidad
      */
     int maxSpeed;
 
@@ -66,9 +66,25 @@ private:
     QList<Particle *> particleList;
 
 
+    /**
+     * @brief Repositorio global de particulas no dominadas
+     */
     GlobalRepository * gRepository;
 
+    /**
+     * @brief Repositorio local de particulas no dominadas
+     */
     ParticleRepository * pRepository;
+
+    /**
+     * @brief Mejor particula global
+     */
+    Particle * bestGlobal;
+
+    /**
+     * @brief Mejor particula local
+     */
+    Particle * bestLocal;
 
 public:
 
@@ -95,6 +111,12 @@ public:
      */
     void initializeParticles();
 
+    /**
+     * @brief Ejecuta el proceso de actualizacion de las particulas
+     * (ejecucion de las iteraciones del algoritmo)
+     */
+    void updateParticles();
+
 
     /**
      * @brief Retorna un nuevo identificador para una particula creado
@@ -102,15 +124,54 @@ public:
      */
     static int getNewParticleId();
 
+    /**
+     * @brief Incrementa el contador de iteraciones
+     */
     void incrementIteration();
 
+    /**
+     * @brief Retorna el contador de iteraciones con el valor actual
+     * @return el contador de iteraciones con el valor actual
+     */
     int getCurrentIteration();
 
     /**
-     * @brief stopEvolution
-     * @return
+     * @brief Retorna si se debe detener la simulacion porque se cumplio la condicion
+     * de parada
+     * @return si se debe detener la simulacion porque se cumplio la condicion de parada
      */
     bool stopEvolution();
+
+    /**
+     * @brief Retorna el parametro cognitivo
+     * @return parametro cognitivo
+     */
+    int getCognitiveParameter();
+
+    /**
+     * @brief Retorna el parametro social
+     * @return parametro social
+     */
+    int getSocialParameter();
+
+    /**
+     * @brief Retorna el parametro de inertia
+     * @return parametro de inertia
+     */
+    double getInertiaParameter();
+
+    /**
+     * @brief Retorna el parametro maxima velocidad
+     * @return parametro maxima velocidad
+     */
+    int getMaxSpeedParameter();
+
+    /**
+     * @brief Retorna un valor aleatorio entre [0,1]
+     * @return valor aleatorio entre [0,1]
+     */
+    double getRandomUniform();
+
 };
 
 #endif // SIMULATION_H

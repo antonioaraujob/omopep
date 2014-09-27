@@ -69,6 +69,14 @@ public:
      */
     Particle * getRandomLocalFromParticle(int particleId);
 
+
+    void addNonDominatedParticle(Particle * particle);
+
+
+    void eliminateDominatedParticles();
+
+    bool isParticleInLocalRepository(Particle * particle);
+
 };
 
 #endif // PARTICLEREPOSITORY_H

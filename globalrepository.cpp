@@ -17,30 +17,48 @@ QList<Particle *> GlobalRepository::getRepositoryList()
 
 void GlobalRepository::addNonDominatedParticle(Particle * p)
 {
-    nonDominatedParticlesList.append(p);
+    // verificar si la particula ya existe en el repositorio
+    if (!isParticleInGlobalRepository(p))
+    {
+        Particle * newParticle = new Particle(*p);
+        nonDominatedParticlesList.append(newParticle);
+    }
+
+
 }
 
 
 bool GlobalRepository::isParticleInGlobalRepository(Particle * particle)
 {
 
-    qDebug("->ExternalFile::isParticleInGlobalRepository");
+    qDebug("...GlobalRepository::isParticleInGlobalRepository");
     Particle * alreadyInsertedParticle;
+
+    bool exist = false;
 
     for (int i = 0; i < nonDominatedParticlesList.count(); i++)
     {
         qDebug("   dentro del for");
         alreadyInsertedParticle = nonDominatedParticlesList.at(i);
-        if (particle->getParticleId() == alreadyInsertedParticle->getParticleId())
-        {
-            qDebug("---> la particula EXISTE en el repositorio global");
-            return true;
-        }
 
+        bool sameParameters = true;
+
+        for (int i = 0; i < particle->getNumberOfParameters(); i++)
+        {
+            if (particle->getParameter(i) != alreadyInsertedParticle->getParameter(i))
+            {
+                sameParameters = false;
+                break;
+            }
+        }
+        if ( particle->getParticleId() == alreadyInsertedParticle->getParticleId() && (sameParameters) )
+        {
+            exist = true;
+        }
     }
 
     qDebug("   antes de salir");
-    return false;
+    return exist;
 
 }
 

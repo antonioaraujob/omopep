@@ -86,19 +86,29 @@ Particle::Particle(int numberOfApsDeployed, int maxSpeed)
 
 Particle::Particle(Particle &p)
 {
+    particleId = p.getParticleId();
+    wonMatchesCounter = p.getWonMatchesCounter();
+
     for (int i=0; i<44; i++)
     {
         parametersList.append(p.getParameter(i));
+    }
+
+    for (int j=0; j<44; j++)
+    {
+        velocitityList.append(p.getParameter(j));
     }
 
     // calcular el valor de desempeno para el individuo
     calculatePerformanceValue();
 
     // calcular el valor de desempeno para la descubierta
-    setPerformanceDiscovery(getRandomMaxChannelTime());
+    //setPerformanceDiscovery(getRandomMaxChannelTime());
+    calculateDiscoveryValue();
 
     // calcular el valor de desempeno para la latencia
-    setPerformanceLatency(getRandomMaxChannelTime());
+    //setPerformanceLatency(getRandomMaxChannelTime());
+    calculateLatencyValue();
 }
 
 int Particle::getParticleId()

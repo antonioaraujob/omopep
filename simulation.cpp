@@ -61,8 +61,9 @@ void Simulation::initializeParticles()
 
         // agregar la posicion actual de la particula a su repositorio local
         QList<Particle*> internalParticleList;
-        internalParticleList.append(particle);
-        pRepository->addParticle(particle, internalParticleList);
+        Particle * newParticle = new Particle(*particle);
+        internalParticleList.append(newParticle);
+        pRepository->addParticle(newParticle, internalParticleList);
 
         /*
         // verificar repositorio local
@@ -103,6 +104,10 @@ void Simulation::updateParticles()
         // iterar sobre cada componente de la particula
         for (int j = 0; j < particle->getNumberOfParameters(); j++)
         {
+            // TODO
+            // chequear que el parametro no sea el numero de AP ni que los canales se repitan
+
+
             double newVelocity = getInertiaParameter() + particle->getVelocity(j) +
                     (getCognitiveParameter() * getRandomUniform() * ( bestGlobal->getParameter(j) - particle->getParameter(j))) +
                     (getSocialParameter() * getRandomUniform() * (bestLocal->getParameter(j) - particle->getParameter(j)));
@@ -119,12 +124,46 @@ void Simulation::updateParticles()
 
             // ahora la actualizacion del componente en la posicion j
 
+            int newParameter = particle->getParameter(j) + particle->getVelocity(j);
 
+            particle->setParameter(j,newParameter);
+        }
+
+        // reemplazar la particula con sus componentes actualizados
+        particleList.replace(i,particle);
+    }
+
+    // iterar sobre cada particula
+    for (int k = 0; k < particles; k++)
+    {
+        particle = particleList.at(k);
+
+        // evaluar las particulas
+        particle->calculateDiscoveryValue();
+        particle->calculateLatencyValue();
+
+        // actualizar los repositorios
+
+        // verificar si la particula NO ES DOMINADA por cada particula del repositorio global
+        if (!gRepository->isNewParticleDominatedByGlobalRepository(particle))
+        {
+            gRepository->addNonDominatedParticle(particle);
+
+            gRepository->eliminateDominatedParticles();
 
         }
 
+        // verificar repositorio local
+        // verificar si la particula NO ES DOMINADA por cada particula de su repositorio
+        if (!pRepository->isNewParticleDominatedByRepository(particle))
+        {
 
+            //pRepository->addNonDominatedParticle(particle);
+            pRepository->addNonDominatedParticle(particle);
 
+            pRepository->eliminateDominatedParticles();
+
+        }
 
     }
 

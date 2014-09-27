@@ -50,9 +50,6 @@ bool ParticleRepository::isNewParticleDominatedByRepository(Particle * newPartic
     }
     qDebug("   salio del for");
     return isDominated;
-
-
-
 }
 
 bool ParticleRepository::particleDominate(Particle * xj, Particle * xi)
@@ -105,9 +102,59 @@ Particle * ParticleRepository::getRandomLocalFromParticle(int particleId)
 }
 
 
+void ParticleRepository::addNonDominatedParticle(Particle * particle)
+{
+
+    if (!isParticleInLocalRepository(particle))
+    {
+        QList<Particle*> localList = personalRepository.value(particle->getParticleId());
+
+        Particle * newParticle = new Particle(*particle);
+
+        //localList.append(particle);
+        localList.append(newParticle);
+
+        personalRepository.insert(particle->getParticleId(),localList);
+
+    }
+}
+
+void ParticleRepository::eliminateDominatedParticles()
+{
+
+}
 
 
+bool ParticleRepository::isParticleInLocalRepository(Particle * particle)
+{
+    qDebug("...ParticleRepository::isParticleInLocalRepository");
+    Particle * alreadyInsertedParticle;
 
+    bool exist = false;
 
+    QList<Particle*> localList = personalRepository.value(particle->getParticleId());
 
+    for (int i = 0; i < localList.count(); i++)
+    {
+        qDebug("   dentro del for");
+        alreadyInsertedParticle = localList.at(i);
 
+        bool sameParameters = true;
+
+        for (int i = 0; i < particle->getNumberOfParameters(); i++)
+        {
+            if (particle->getParameter(i) != alreadyInsertedParticle->getParameter(i))
+            {
+                sameParameters = false;
+                break;
+            }
+        }
+        if ( particle->getParticleId() == alreadyInsertedParticle->getParticleId() && (sameParameters) )
+        {
+            exist = true;
+        }
+    }
+    qDebug("   antes de salir");
+    return exist;
+
+}

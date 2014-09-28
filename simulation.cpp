@@ -220,3 +220,15 @@ double Simulation::getRandomUniform()
     return qrand()/double(RAND_MAX);
 }
 
+void Simulation::printGlobalRepository()
+{
+    for (int i = 0; i < gRepository->getRepositoryList().count(); i++)
+    {
+        gRepository->getRepositoryList().at(i)->printParticle();
+    }
+}
+
+GlobalRepository * Simulation::getGlobalRepository()
+{
+    return gRepository;
+}

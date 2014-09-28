@@ -172,6 +172,11 @@ public:
      */
     double getRandomUniform();
 
+
+    void printGlobalRepository();
+
+    GlobalRepository * getGlobalRepository();
+
 };
 
 #endif // SIMULATION_H

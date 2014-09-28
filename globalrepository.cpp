@@ -21,10 +21,37 @@ void GlobalRepository::addNonDominatedParticle(Particle * p)
     if (!isParticleInGlobalRepository(p))
     {
         Particle * newParticle = new Particle(*p);
+
+        QList<int> particleIdToRemove;
+
+        Particle * particleTmp;
+
+        for (int i = 0; i < nonDominatedParticlesList.count(); i++)
+        {
+            particleTmp = nonDominatedParticlesList.at(i);
+
+            if (particleDominate(newParticle, particleTmp))
+            {
+                particleIdToRemove.append(particleTmp->getParticleId());
+            }
+        }
+
+        // eliminar los individuos marcados del repositorio
+        for (int j = 0; j < particleIdToRemove.count(); j++)
+        {
+            for (int k = 0; k < nonDominatedParticlesList.count(); k++)
+            {
+                if (nonDominatedParticlesList.at(k)->getParticleId() == particleIdToRemove.at(j))
+                {
+                    nonDominatedParticlesList.removeAt(j);
+                    break;
+                }
+            }
+        }
+
+        // insertar la particula en el repositorio
         nonDominatedParticlesList.append(newParticle);
     }
-
-
 }
 
 

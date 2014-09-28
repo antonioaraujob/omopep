@@ -5,6 +5,7 @@
 #include <QValidator>
 #include <QDoubleValidator>
 #include <QMessageBox>
+#include <QStringListModel>
 
 
 #include "particle.h"
@@ -16,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->setFixedSize(700, 500);
+    this->setFixedSize(851, 616);
 
     // Validadores para los parametros del algoritmo
 
@@ -98,6 +99,14 @@ void MainWindow::executeAlgorithm()
     }while(!simulation->stopEvolution()); // fin de la repeticion
 
     qDebug("...terminó la simulación.");
+
+    simulation->printGlobalRepository();
+
+    // poblar la lista de individuos no dominados del archivo externo
+    populateListView();
+
+    // generar el grafico
+    //setupCustomPlot(ui->customPlot);
 }
 
 
@@ -146,4 +155,27 @@ bool MainWindow::validateFields()
         msg.exec();
 
     return validate;
+}
+
+void MainWindow::populateListView()
+{
+    QStringList individuals;
+
+    QString aux;
+    for (int i = 0; i < simulation->getGlobalRepository()->getRepositoryList().count(); i++)
+    {
+        aux.append(simulation->getGlobalRepository()->getRepositoryList().at(i)->getParticleAsQString());
+        individuals << aux;
+        aux.clear();
+    }
+
+
+    QStringListModel *model = new QStringListModel();
+    model->setStringList(individuals);
+
+    ui->listViewBestNonDominatedParticles->setModel(model);
+
+
+    int numberOfParticles = simulation->getGlobalRepository()->getRepositoryList().count();
+    ui->labelNonDominatedNUmber->setText(QString::number(numberOfParticles));
 }

@@ -36,6 +36,8 @@ public:
      */
     bool validateFields();
 
+    void populateListView();
+
 private:
     Ui::MainWindow *ui;
 

@@ -111,11 +111,35 @@ void ParticleRepository::addNonDominatedParticle(Particle * particle)
 
         Particle * newParticle = new Particle(*particle);
 
-        //localList.append(particle);
+        QList<int> particleIdToRemove;
+
+        Particle * particleTmp;
+
+        for (int i = 0; i < localList.count(); i++)
+        {
+            particleTmp = localList.at(i);
+
+            if (particleDominate(newParticle, particleTmp))
+            {
+                particleIdToRemove.append(particleTmp->getParticleId());
+            }
+        }
+
+        // eliminar los individuos marcados del repositorio
+        for (int j = 0; j < particleIdToRemove.count(); j++)
+        {
+            for (int k = 0; k < localList.count(); k++)
+            {
+                if (localList.at(k)->getParticleId() == particleIdToRemove.at(j))
+                {
+                    localList.removeAt(j);
+                    break;
+                }
+            }
+        }
+
         localList.append(newParticle);
-
         personalRepository.insert(particle->getParticleId(),localList);
-
     }
 }
 

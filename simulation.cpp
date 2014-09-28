@@ -46,7 +46,7 @@ void Simulation::initializeParticles()
     {
         particle = new Particle(0, maxSpeed);
         particle->printParticle();
-        qDebug("particleId: %d", particle->getParticleId());
+        //qDebug("particleId: %d", particle->getParticleId());
         particleList.append(particle);
 
         // verificar repositorio global
@@ -64,25 +64,8 @@ void Simulation::initializeParticles()
         Particle * newParticle = new Particle(*particle);
         internalParticleList.append(newParticle);
         pRepository->addParticle(newParticle, internalParticleList);
-
-        /*
-        // verificar repositorio local
-        // verificar si la particula NO ES DOMINADA por cada particula de su repositorio
-        if (!pRepository->isNewParticleDominatedByRepository(particle))
-        {
-
-            //pRepository->addNonDominatedParticle(particle);
-            pRepository->addNonDominatedParticle(particle, internalParticleList);
-
-            pRepository->eliminateDominatedParticles();
-
-        }
-        */
-
-
     }
     qDebug("tamano de la poblacion: %d",particleList.count());
-
 }
 
 
@@ -93,6 +76,7 @@ void Simulation::updateParticles()
     // iterar sobre cada particula
     for (int i = 0; i < particles; i++)
     {
+        //qDebug("****** actualizando particulas******");
         particle = particleList.at(i);
 
         // seleccionar el mejor global
@@ -104,10 +88,6 @@ void Simulation::updateParticles()
         // iterar sobre cada componente de la particula
         for (int j = 0; j < particle->getNumberOfParameters(); j++)
         {
-            // TODO
-            // chequear que el parametro no sea el numero de AP ni que los canales se repitan
-
-
             double newVelocity = getInertiaParameter() + particle->getVelocity(j) +
                     (getCognitiveParameter() * getRandomUniform() * ( bestGlobal->getParameter(j) - particle->getParameter(j))) +
                     (getSocialParameter() * getRandomUniform() * (bestLocal->getParameter(j) - particle->getParameter(j)));
@@ -122,15 +102,92 @@ void Simulation::updateParticles()
                 particle->setVelocitity(j, getMaxSpeedParameter()*(-1));
             }
 
-            // ahora la actualizacion del componente en la posicion j
-
             int newParameter = particle->getParameter(j) + particle->getVelocity(j);
 
+            // ahora la actualizacion del componente en la posicion j
+
+            // chequear que el parametro no sea el numero de AP ni que los canales se repitan
+            int index = j;
+
+            if (particle->isThisParameterAChannel(index))
+            {
+                //qDebug("   isThisParameterAChannel(index)");
+
+                // verificar que: 1 <= newParameter <= 11
+                if ( (newParameter <= 0) || (newParameter > 11) )
+                {
+                    // asignar un nuevo valor valido
+                    newParameter = particle->getJustARandomChannel();
+
+                }
+                // verificar que el canal no se haya utilizado
+
+                //QHash<int, bool> channelsUsed = particle->getChannelsUsedForFly();
+                while (particle->isChannelsUsedForFly(newParameter))
+                {
+                    // seleccionar otro canal que no se haya seleccionado
+                    newParameter = particle->getJustARandomChannel();
+                }
+                //channelsUsed[newParameter]=true;
+                particle->markChannelUsedForFly(newParameter);
+
+
+                //qDebug(qPrintable("   channel despues de mutado: "+QString::number(intYi)));
+            }
+            else if (particle->isThisParameterAMinChannelTime(index))
+            {
+                //qDebug("   isThisParameterAMinChannelTime(index)");
+                if (newParameter < 0)
+                {
+                    newParameter = 0;
+                    //qDebug("   el minChannelTime mutado esta por debajo del limite (index %d)", index);
+                }
+                else if (newParameter > 10)
+                {
+                    newParameter = 10;
+                    //qDebug("   el minChannelTime mutado esta por encima del limite (index %d)", index);
+                }
+
+                //qDebug(qPrintable("   minChannelTime despues de mutado: "+QString::number(intYi)));
+            }
+            else if (particle->isThisParameterAMaxChannelTime(index))
+            {
+                //qDebug("   isThisParameterAMaxChannelTime(index)");
+                if (newParameter < 10)
+                {
+                    newParameter = 10;
+                    //qDebug("   el maxChannelTime mutado esta por debajo del limite (index %d)", index);
+                }
+                else if (newParameter > 100)
+                {
+                    newParameter = 100;
+                    //qDebug("   el maxChannelTime mutado esta por encima del limite (index %d)", index);
+                }
+
+                //qDebug(qPrintable("   maxChannelTime despues de mutado: "+QString::number(intYi)));
+            }
+            else if (particle->isThisParameterAPs(index))
+            {
+                //qDebug("   isThisParameterAPs(index)");
+                newParameter = particle->getNewParameterAPs(particle->getParameter(index-3),
+                                           particle->getParameter(index-2),
+                                           particle->getParameter(index-1));
+                //qDebug(qPrintable("   APs despues de mutado: "+QString::number(intYi)));
+            }
+
+            //qDebug("oldParameter: %f - newParameter: %d", particle->getParameter(j), newParameter);
             particle->setParameter(j,newParameter);
         }
 
+        // resetear el diccionario de canales utilizados en el vuelo
+        particle->resetChannelsUsedForFly();
+
         // reemplazar la particula con sus componentes actualizados
         particleList.replace(i,particle);
+        //particle->printParticle();
+
+
+
     }
 
     // iterar sobre cada particula
@@ -166,7 +223,7 @@ void Simulation::updateParticles()
         }
 
     }
-
+    //qDebug("****** fin actualizando particulas******");
 }
 
 
@@ -188,7 +245,7 @@ int Simulation::getCurrentIteration()
 
 bool Simulation::stopEvolution()
 {
-    if (currentIteration > iterations)
+    if (currentIteration == iterations)
         return true;
     else
         return false;

@@ -39,16 +39,16 @@ bool ParticleRepository::isNewParticleDominatedByRepository(Particle * newPartic
 
     for (int i = 0; i < localRepository.count(); i++)
     {
-        qDebug("   dentro del for");
+        //qDebug("   dentro del for");
         nonDominatedParticle = localRepository.at(i);
         if (particleDominate(nonDominatedParticle, newParticle))
         {
-            qDebug("  newParticle dominada por el repositorio local");
+            //qDebug("  newParticle dominada por el repositorio local");
             isDominated = true;
             break;
         }
     }
-    qDebug("   salio del for");
+    //qDebug("   salio del for");
     return isDominated;
 }
 
@@ -160,7 +160,7 @@ bool ParticleRepository::isParticleInLocalRepository(Particle * particle)
 
     for (int i = 0; i < localList.count(); i++)
     {
-        qDebug("   dentro del for");
+        //qDebug("   dentro del for");
         alreadyInsertedParticle = localList.at(i);
 
         bool sameParameters = true;
@@ -178,7 +178,7 @@ bool ParticleRepository::isParticleInLocalRepository(Particle * particle)
             exist = true;
         }
     }
-    qDebug("   antes de salir");
+    //qDebug("   antes de salir");
     return exist;
 
 }

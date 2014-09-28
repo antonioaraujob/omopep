@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = omopep
 TEMPLATE = app
@@ -20,12 +20,14 @@ SOURCES += main.cpp\
     simulation.cpp \
     particle.cpp \
     globalrepository.cpp \
-    particlerepository.cpp
+    particlerepository.cpp \
+    qcustomplot.cpp
 
 HEADERS  += mainwindow.h \
     simulation.h \
     particle.h \
     globalrepository.h \
-    particlerepository.h
+    particlerepository.h \
+    qcustomplot.h
 
 FORMS    += mainwindow.ui

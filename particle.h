@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QList>
 #include <QSet>
+#include <QHash>
 
 
 
@@ -55,6 +56,15 @@ private:
     int wonMatchesCounter;
 
 
+    /**
+     * @brief Diccionario para mantener registro de los canales que ya se han utilizado
+     * en un proceso de mutacion.
+     *
+     * Se utiliza para evitar que en la mutacion de parametros de un individuo se asignen
+     * canales que ya se utilizaron previamente
+     */
+    QHash<int, bool> channelsUsedForFly;
+
 public:
     /**
      * @brief Constructor de la clase
@@ -89,6 +99,13 @@ public:
      * @return Numero de canal aleatorio
      */
     int getRandomChannel();
+
+    /**
+     * @brief Retorna un numero de canal aleatorio.
+     *
+     * @return Numero de canal aleatorio entre [1,11]
+     */
+    int getJustARandomChannel();
 
     /**
      * @brief Retorna un numero de minChannelTime aleatorio
@@ -263,6 +280,66 @@ public:
      */
     double getVelocity(int position);
 
+
+    /**
+     * @brief Retorna verdadero si el parametro a revisar de un individuo corresponde a un canal
+     * @param index indice del parametro a revisar del individuo
+     * @return Verdadero si el indice corresponde a un parametro de numero de canal
+     */
+    bool isThisParameterAChannel(int index);
+
+    /**
+     * @brief Retorna verdadero si el parametro a revisar de un individuo corresponde a un MinChannelTime
+     * @param index indice del parametro a revisar del individuo
+     * @return Verdadero si el indice corresponde a un parametro de MinChannelTime
+     */
+    bool isThisParameterAMinChannelTime(int index);
+
+    /**
+     * @brief Retorna verdadero si el parametro a revisar de un individuo corresponde a un MaxChannelTime
+     * @param index indice del parametro a revisar del individuo
+     * @return Verdadero si el indice corresponde a un parametro de MaxChannelTime
+     */
+    bool isThisParameterAMaxChannelTime(int index);
+
+    /**
+     * @brief Retorna verdadero si el parametro a revisar de un individuo corresponde a numero de APs
+     * @param index indice del parametro a revisar del individuo
+     * @return Verdadero si el indice corresponde a un parametro de APs
+     */
+    bool isThisParameterAPs(int index);
+
+    /**
+     * @brief Retorna un nuevo valor de descubrimiento de AP de los experimentos
+     * @param channel canal en el que se esta escuchando
+     * @param minChannelTime minChannelTime
+     * @param maxChannelTime maxChannelTime
+     * @return
+     */
+    int getNewParameterAPs(int channel, double minChannelTime, double maxChannelTime);
+
+    /**
+     * @brief Retorna el diccionario de canales utilizados por una particula en un vuelo para
+     * evitar que se utilicen canales mas de una vez
+     * @return diccionario de canales utilizados por una particula en un vuelo
+     */
+    QHash<int, bool> getChannelsUsedForFly();
+
+    /**
+     * @brief Retorna si el canal ya se ha utilizado en un parametro al momento de volar
+     * @param channel canal a consultar
+     * @return si el canal ya se ha utilizado en un parametro al momento de volar
+     */
+    bool isChannelsUsedForFly(int channel);
+
+    /**
+     * @brief markChannelUsedForFly
+     * @param channel
+     */
+    void markChannelUsedForFly(int channel);
+
+
+    void resetChannelsUsedForFly();
 };
 
 

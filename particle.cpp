@@ -81,6 +81,13 @@ Particle::Particle(int numberOfApsDeployed, int maxSpeed)
     // calcular el valor de desempeno para la latencia
     //setPerformanceLatency(getRandomMaxChannelTime());
     calculateLatencyValue();
+
+
+    // inicializar el diccionario de canales utilizados en el vuelo en falso
+    for (int i=1; i<=11;i++)
+    {
+        channelsUsedForFly[i]=false;
+    }
 }
 
 
@@ -109,6 +116,12 @@ Particle::Particle(Particle &p)
     // calcular el valor de desempeno para la latencia
     //setPerformanceLatency(getRandomMaxChannelTime());
     calculateLatencyValue();
+
+    // inicializar el diccionario de canales utilizados en el vuelo en falso
+    for (int i=1; i<=11;i++)
+    {
+        channelsUsedForFly[i]=false;
+    }
 }
 
 int Particle::getParticleId()
@@ -142,6 +155,13 @@ int Particle::getRandomChannel()
     }
 }
 
+int Particle::getJustARandomChannel()
+{
+    // el rango es 1 <= channel <= 11
+    int low = 1;
+    int high = 11;
+    return qrand() % ((high + 1) - low) + low;
+}
 
 double Particle::getRandomMinChannelTime()
 {
@@ -228,7 +248,20 @@ void Particle::printParticle()
     QString individualString("   ");
     for (int j=0;j<44;j++)
     {
-        individualString.append(QString::number(parametersList.at(j)));
+        if ( (j == 0) || (j == 4) || (j == 8) || (j == 12) || (j == 16) ||
+             (j == 20) || (j == 24) || (j == 28) || (j == 32) || (j == 36) || (j == 40) )
+        {
+            individualString.append("(");
+            individualString.append(QString::number(parametersList.at(j)));
+            individualString.append(")");
+        }
+        else
+        {
+            individualString.append(QString::number(parametersList.at(j)));
+        }
+
+
+
         if (j!=43)
             individualString.append("-");
     }
@@ -503,3 +536,117 @@ double Particle::getVelocity(int position)
 {
     return velocitityList.at(position);
 }
+
+
+bool Particle::isThisParameterAChannel(int index)
+{
+    if ( (index == 0) || (index == 4) || (index == 8) || (index == 12) || (index == 16) ||
+         (index == 20) || (index == 24) || (index == 28) || (index == 32) || (index == 36) || (index == 40) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Particle::isThisParameterAMinChannelTime(int index)
+{
+    if ( (index == 1) || (index == 5) || (index == 9) || (index == 13) || (index == 17) ||
+         (index == 21) || (index == 25) || (index == 29) || (index == 33) || (index == 37) || (index == 41) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Particle::isThisParameterAMaxChannelTime(int index)
+{
+    if ( (index == 2) || (index == 6) || (index == 10) || (index == 14) || (index == 18) ||
+         (index == 22) || (index == 26) || (index == 30) || (index == 34) || (index == 38) || (index == 42) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+bool Particle::isThisParameterAPs(int index)
+{
+    if ( (index == 3) || (index == 7) || (index == 11) || (index == 15) || (index == 19) ||
+         (index == 23) || (index == 27) || (index == 31) || (index == 35) || (index == 39) || (index == 43) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+int Particle::getNewParameterAPs(int channel, double minChannelTime, double maxChannelTime)
+{
+    //qDebug("Mutation::getNewParameterAPs(%d, %f, %f)", channel, minChannelTime, maxChannelTime);
+
+    // base de datos de experimentos
+    QString database("test_18.1.db");
+    // tipo de experimento para extraer las muestras: full -> full scanning
+    QString experiment("full");
+    Scan scan(database.toStdString(),experiment.toStdString());
+    scan.init();
+
+    Scan::ScanResults results;
+
+    results = scan.execute(channel, minChannelTime, maxChannelTime);
+
+    //qDebug("** nuevo parametro AP: %d", results.size());
+    return results.size();
+
+
+}
+
+QHash<int, bool> Particle::getChannelsUsedForFly()
+{
+    return channelsUsedForFly;
+}
+
+
+bool Particle::isChannelsUsedForFly(int channel)
+{
+    if (channelsUsedForFly.value(channel))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void Particle::markChannelUsedForFly(int channel)
+{
+    channelsUsedForFly[channel] = true;
+}
+
+
+void Particle::resetChannelsUsedForFly()
+{
+    // inicializar el diccionario de canales utilizados en el vuelo en falso
+    for (int i=1; i<=11;i++)
+    {
+        channelsUsedForFly[i]=false;
+    }
+}
+
+
+
+
+
+

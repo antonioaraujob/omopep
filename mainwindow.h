@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+
+#include "qcustomplot.h"
+
 #include "simulation.h"
 
 namespace Ui {
@@ -36,7 +39,21 @@ public:
      */
     bool validateFields();
 
+    /**
+     * @brief Completa el widget ListView con lass particulas no dominadas del
+     * repositorio // This is available in all editors. al final de la ejecución del algoritmo PSO
+     */
     void populateListView();
+
+    /**
+     * @brief Configura el widget para generar el grafico de los individuos no dominados del
+     * archivo externo.
+     *  Se esta utilizando QCustomPlot
+     *
+     * @param customPlot
+     */
+    void setupCustomPlot(QCustomPlot *customPlot);
+
 
 private:
     Ui::MainWindow *ui;

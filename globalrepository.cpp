@@ -65,7 +65,7 @@ bool GlobalRepository::isParticleInGlobalRepository(Particle * particle)
 
     for (int i = 0; i < nonDominatedParticlesList.count(); i++)
     {
-        qDebug("   dentro del for");
+        //qDebug("   dentro del for");
         alreadyInsertedParticle = nonDominatedParticlesList.at(i);
 
         bool sameParameters = true;
@@ -84,7 +84,7 @@ bool GlobalRepository::isParticleInGlobalRepository(Particle * particle)
         }
     }
 
-    qDebug("   antes de salir");
+    //qDebug("   antes de salir");
     return exist;
 
 }
@@ -136,16 +136,16 @@ bool GlobalRepository::isNewParticleDominatedByGlobalRepository(Particle * newPa
 
     for (int i = 0; i < nonDominatedParticlesList.count(); i++)
     {
-        qDebug("   dentro del for");
+        //qDebug("   dentro del for");
         nonDominatedParticle = nonDominatedParticlesList.at(i);
         if (particleDominate(nonDominatedParticle, newParticle))
         {
-            qDebug("  newParticle dominada por el repositorio global");
+            //qDebug("  newParticle dominada por el repositorio global");
             isDominated = true;
             break;
         }
     }
-    qDebug("   salio del for");
+    //qDebug("   salio del for");
     return isDominated;
 }
 

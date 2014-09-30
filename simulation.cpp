@@ -2,6 +2,31 @@
 #include "particle.h"
 
 #include <QList>
+#include <QMessageBox>
+
+
+/**
+ * @brief Funcion de comparacion de particulas con respecto al valor de desempeno de descubrimiento
+ * @param p1 Particula 1 a comparar
+ * @param p2 Particula 2 a comparar
+ * @return Verdadero si p1 es menor que p2 con respecto a la funcion objetivo de descubrimiento
+ */
+inline static bool xLessThanF1(Particle *p1, Particle *p2)
+{
+    return p1->getPerformanceDiscovery() < p2->getPerformanceDiscovery();
+}
+
+
+/**
+ * @brief Funcion de comparacion de particulas con respecto al valor de desempeno de latencia
+ * @param p1 Particula 1 a comparar
+ * @param p2 Particula 2 a comparar
+ * @return Verdadero si p1 es menor que p2 con respecto a la funcion objetivo de latencia
+ */
+inline static bool xLessThanF2(Particle *p1, Particle *p2)
+{
+    return p1->getPerformanceLatency() < p2->getPerformanceLatency();
+}
 
 
 /**
@@ -11,7 +36,9 @@ int Simulation::particleIdCounter = 0;
 
 
 Simulation::Simulation(int cognitiveParameter, int socialParameter,
-                       double inertiaParameter, int maxSpeedParameter, int particlesParameter, int maxIterations)
+                       double inertiaParameter, int maxSpeedParameter,
+                       int particlesParameter, int maxIterations, bool selection,
+                       int subintervalsGrid)
 {
     cognitive = cognitiveParameter;
 
@@ -30,6 +57,19 @@ Simulation::Simulation(int cognitiveParameter, int socialParameter,
     gRepository = new GlobalRepository();
 
     pRepository = new ParticleRepository();
+
+    lF1 = 0;
+
+    uF1 = 0;
+
+    lF2 = 0;
+
+    uF2 = 0;
+
+    gridSubintervalsNumber = subintervalsGrid;
+
+    selectionModified = selection;
+
 }
 
 Simulation::~Simulation()
@@ -69,6 +109,56 @@ void Simulation::initializeParticles()
 }
 
 
+void Simulation::intializeGrid()
+{
+    getInitialGridBoundaries();
+    nGrid = new Grid(gridSubintervalsNumber, lF1, uF1, lF2, uF2);
+
+    // agregar las particulas a la grid
+
+    Particle * auxParticle;
+    for (int i = 0; i < particleList.count(); i++)
+    {
+        auxParticle = new Particle(*particleList.at(i));
+        nGrid->addParticleToGrid(auxParticle);
+    }
+
+
+}
+
+void Simulation::getInitialGridBoundaries()
+{
+    // ordenar los no dominados con respecto a la funcion objetivo 1 de menor a mayor
+    qSort(particleList.begin(), particleList.end(), xLessThanF1);
+
+    // tomar los limites inferior y superior
+    lF1 = particleList.at(0)->getPerformanceDiscovery();
+    uF1 = particleList.at(particleList.count()-1)->getPerformanceDiscovery();
+
+    // ordenar los no dominados con respecto a la funcion objetivo 2 de menor a mayor
+    qSort(particleList.begin(), particleList.end(), xLessThanF2);
+
+    lF2 = particleList.at(0)->getPerformanceLatency();
+    uF2 = particleList.at(particleList.count()-1)->getPerformanceLatency();
+}
+
+void Simulation::getNewGridBoundaries()
+{
+    QList<Particle*> globalRepositoryList = gRepository->getRepositoryList();
+    // ordenar los no dominados con respecto a la funcion objetivo 1 de menor a mayor
+    qSort(globalRepositoryList.begin(), globalRepositoryList.end(), xLessThanF1);
+
+    // tomar los limites inferior y superior
+    lF1 = globalRepositoryList.at(0)->getPerformanceDiscovery();
+    uF1 = globalRepositoryList.at(globalRepositoryList.count()-1)->getPerformanceDiscovery();
+
+    // ordenar los no dominados con respecto a la funcion objetivo 2 de menor a mayor
+    qSort(globalRepositoryList.begin(), globalRepositoryList.end(), xLessThanF2);
+
+    lF2 = globalRepositoryList.at(0)->getPerformanceLatency();
+    uF2 = globalRepositoryList.at(globalRepositoryList.count()-1)->getPerformanceLatency();
+}
+
 void Simulation::updateParticles()
 {
     Particle * particle;
@@ -80,7 +170,15 @@ void Simulation::updateParticles()
         particle = particleList.at(i);
 
         // seleccionar el mejor global
-        bestGlobal = gRepository->getRandomParticle();
+        if (selectionModified)
+        {
+            //bestGlobal = gRepository->getLeader();
+            bestGlobal = gRepository->getRandomParticle();
+        }
+        else
+        {
+            bestGlobal = gRepository->getRandomParticle();
+        }
 
         // seleccionar el mejor local
         bestLocal = pRepository->getRandomLocalFromParticle(particle->getParticleId());
@@ -208,6 +306,10 @@ void Simulation::updateParticles()
 
             gRepository->eliminateDominatedParticles();
 
+            if (selectionModified)
+            {
+                addParticleToGrid(particle);
+            }
         }
 
         // verificar repositorio local
@@ -288,4 +390,71 @@ void Simulation::printGlobalRepository()
 GlobalRepository * Simulation::getGlobalRepository()
 {
     return gRepository;
+}
+
+void Simulation::setSelectionModified(bool selection)
+{
+    selectionModified = selection;
+}
+
+bool Simulation::getSelectionModified()
+{
+    return selectionModified;
+}
+
+void Simulation::addParticleToGrid(Particle * newParticle)
+{
+    if (nGrid->particleInsideGrid(newParticle))
+    {
+        Particle * auxParticle;
+        auxParticle = new Particle(*newParticle);
+        nGrid->addParticleToGrid(auxParticle);
+    }
+    else // REGENERAR LA GRID!!!
+    {
+        /*
+        QMessageBox msg;
+        QString text("La particula con id: ");
+        text.append(QString::number(newParticle->getParticleId()));
+        text.append(" no esta en la grid.\n¡SE DEBE REGENERAR!");
+        msg.setText(text);
+        msg.exec();
+        */
+
+        getNewGridBoundaries();
+        delete nGrid;
+        nGrid = new Grid(gridSubintervalsNumber, lF1, uF1, lF2, uF2);
+        updateGrid(gRepository->getRepositoryList());
+    }
+}
+
+void Simulation::updateGrid(QList<Particle *> globalRepositoryList)
+{
+
+    // Para actualizar la rejilla simplemente se incrementan los contadores de los
+    // particulas no dominadas con todos los individuos recién agregados al
+    // archivo externo durante la generación actual.
+
+    qDebug("Simulation::updateGrid");
+    Particle * auxParticle;
+
+    int numParticles = globalRepositoryList.count();
+
+    for (int i = 0; i < numParticles; i++)
+    {
+        auxParticle = new Particle(*globalRepositoryList.at(i));
+
+        if(!nGrid->particleInsideGrid(auxParticle))
+        {
+            // TODO: revisar esto:
+            qDebug("%%%%%%%% el individuo no pertenece a la grid");
+            QMessageBox msg;
+            msg.setText("%%%%%%%% particula no pertenece a la grid\nESTO NO DEBERIA OCURRIR!!!");
+            msg.exec();
+        }
+        else
+        {
+            nGrid->addParticleToGrid(auxParticle);
+        }
+    }
 }

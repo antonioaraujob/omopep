@@ -71,6 +71,13 @@ public slots:
      */
     void executeAlgorithm();
 
+    /**
+     * @brief Slot para habilitar el campo de numero de subintervalos de la grid para la seleccion
+     * del lider
+     * @param state
+     */
+    void activateGridSelection(int state);
+
 };
 
 #endif // MAINWINDOW_H

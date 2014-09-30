@@ -47,8 +47,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEditIterationsParameter->setValidator(validatorIterationsParameter);
     ui->lineEditIterationsParameter->setToolTip("[1..100]");
 
+    QValidator * validatorSubintervalsParameter = new QIntValidator(2, 10, this);
+    ui->lineEditSubintervals->setValidator(validatorSubintervalsParameter);
+    ui->lineEditSubintervals->setToolTip("[2..10]");
+
     connect(ui->pushButtonExecute, SIGNAL(clicked()), this, SLOT(executeAlgorithm()));
 
+    connect(ui->checkBoxGrid, SIGNAL(stateChanged(int)), this, SLOT(activateGridSelection(int)));
+    ui->label_9->setEnabled(false);
+    ui->lineEditSubintervals->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -66,21 +73,32 @@ void MainWindow::executeAlgorithm()
         return;
     }
 
-    qsrand((uint)QTime::currentTime().msec());
+    //qsrand((uint)QTime::currentTime().msec());
 
     double inertia = ui->lineEditInertiaParameter->text().toDouble();
     qDebug("valor de inercia: %f",inertia);
 
     simulation = new Simulation(ui->lineEditCognitiveParameter->text().toInt(),
-                                             ui->lineEditSocialParameter->text().toInt(),
-                                             ui->lineEditInertiaParameter->text().toDouble(),
-                                             ui->lineEditMaxSpeedParameter->text().toInt(),
-                                             ui->lineEditParticlesParameter->text().toInt(),
-                                             ui->lineEditIterationsParameter->text().toInt());
+                                ui->lineEditSocialParameter->text().toInt(),
+                                ui->lineEditInertiaParameter->text().toDouble(),
+                                ui->lineEditMaxSpeedParameter->text().toInt(),
+                                ui->lineEditParticlesParameter->text().toInt(),
+                                ui->lineEditIterationsParameter->text().toInt(),
+                                ui->checkBoxGrid->isChecked(),
+                                ui->lineEditSubintervals->text().toInt());
 
     // inicializar las particulas
     // (la inicializacion de los repositorios (global y locales) tambien se ejecuta en este paso)
     simulation->initializeParticles();
+
+
+    if (simulation->getSelectionModified())
+    {
+        qDebug("****************************simulation->getSelectionModified()***************");
+        // inicializar la grid
+        simulation->intializeGrid();
+    }
+
 
 
     // repetir por el numero maximo de generaciones
@@ -263,4 +281,18 @@ void MainWindow::setupCustomPlot(QCustomPlot *customPlot)
 
 */
 
+}
+
+void MainWindow::activateGridSelection(int state)
+{
+    if (state == 0)
+    {
+        ui->label_9->setEnabled(false);
+        ui->lineEditSubintervals->setEnabled(false);
+    }
+    else if(state == 2)
+    {
+        ui->label_9->setEnabled(true);
+        ui->lineEditSubintervals->setEnabled(true);
+    }
 }

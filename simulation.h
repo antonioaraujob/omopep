@@ -7,6 +7,7 @@
 #include "particle.h"
 #include "globalrepository.h"
 #include "particlerepository.h"
+#include "grid.h"
 
 
 /**
@@ -86,6 +87,42 @@ private:
      */
     Particle * bestLocal;
 
+    /**
+     * @brief Rejilla de particulas globales no dominadas
+     */
+    Grid * nGrid;
+
+    /**
+     * @brief limite inferior de la funcion objetivo 1
+     */
+    double lF1;
+
+    /**
+     * @brief limite superior de la funcion objetivo 1
+     */
+    double uF1;
+
+    /**
+     * @brief limite inferior de la funcion objetivo 2
+     */
+    double lF2;
+
+    /**
+     * @brief limite superior de la funcion objetivo 2
+     */
+    double uF2;
+
+    /**
+     * @brief Numero de subintervalos para la grid
+     */
+    int gridSubintervalsNumber;
+
+    /**
+     * @brief Verdadero si se va a utilizar el algoritmo de seleccion de lider modificado
+     * del repositorio global de particulas
+     */
+    bool selectionModified;
+
 public:
 
     /**
@@ -97,9 +134,11 @@ public:
      * @param maxSpeed valor del parametro velocidad maxima
      * @param particles valor del parametro numero de particulas
      * @param maxIterations valor del parametro numero de iteraciones
+     ** @param selection especifica si se usa el algoritmo de seleccion de lider modificado
+     * @param subintervalsGrid numero de subintervalos para la grid
      */
     Simulation(int cognitiveParameter, int socialParameter, double inertiaParameter, int maxSpeedParameter,
-               int particlesParameter, int maxIterations);
+               int particlesParameter, int maxIterations, bool selection, int subintervalsGrid);
 
     /**
      * @brief Destructor de la clase
@@ -110,6 +149,23 @@ public:
      * @brief Inicializa las particulas de la simulacion
      */
     void initializeParticles();
+
+    /**
+     * @brief Obtiene los limites inferiores y superiores de las funciones objetivo 1 y 2
+     * de acuerdo al contenido de la lista de particulas iniciales
+     */
+    void getInitialGridBoundaries();
+
+    /**
+     * @brief Obtiene los limites inferiores y superiores de las funciones objetivo 1 y 2
+     * de acuerdo al contenido de al repositorio global de particulas
+     */
+    void getNewGridBoundaries();
+
+    /**
+     * @brief Inicializa la rejilla
+     */
+    void intializeGrid();
 
     /**
      * @brief Ejecuta el proceso de actualizacion de las particulas
@@ -172,10 +228,44 @@ public:
      */
     double getRandomUniform();
 
-
+    /**
+     * @brief Imprime las particulas del repositorio global
+     */
     void printGlobalRepository();
 
+    /**
+     * @brief Retorna el repositorio global
+     * @return el repositorio global
+     */
     GlobalRepository * getGlobalRepository();
+
+    /**
+     * @brief Establece la seleccion de lider por el algoritmo modificado
+     * @param selection seleccion
+     */
+    void setSelectionModified(bool selection);
+
+    /**
+     * @brief Retorna si se utiliza la seleccion de lider por el algoritmo modificado
+     * @return si se utiliza la seleccion de lider por el algoritmo modificado
+     */
+    bool getSelectionModified();
+
+    /**
+     * @brief Agrega la particula pasada como argumento a la grid.
+     *
+     * Si la particula cae fuera de los rangos de la grid la reconstruye primero antes de
+     * agregarla
+     * @param newParticle particula a agregar en la grid
+     */
+    void addParticleToGrid(Particle * newParticle);
+
+    /**
+     * @brief Actualiza el contenido de la grid con la lista de particulas del
+     * repositorio global
+     * @param globalRepositoryList lista de particulas no dominadas del repositorio global
+     */
+    void updateGrid(QList<Particle *> globalRepositoryList);
 
 };
 

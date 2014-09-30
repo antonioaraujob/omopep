@@ -84,6 +84,13 @@ public:
      * @return una particula aleatoria del repositorio
      */
     Particle * getRandomParticle();
+
+    /**
+     * @brief Retorna una particula lider de acuerdo al algoritmo modificado de seleccion
+     * @return una particula lider de acuerdo al algoritmo modificado de seleccion
+     */
+    Particle * getLeader();
+
 };
 
 #endif // GLOBALREPOSITORY_H

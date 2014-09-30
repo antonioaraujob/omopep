@@ -21,13 +21,20 @@ SOURCES += main.cpp\
     particle.cpp \
     globalrepository.cpp \
     particlerepository.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    cell.cpp \
+    gridsubinterval.cpp \
+    grid.cpp
 
 HEADERS  += mainwindow.h \
     simulation.h \
     particle.h \
     globalrepository.h \
     particlerepository.h \
-    qcustomplot.h
+    qcustomplot.h \
+    cell.h \
+    gridsubinterval.h \
+    grid.h
+
 
 FORMS    += mainwindow.ui

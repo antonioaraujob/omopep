@@ -193,3 +193,10 @@ Particle * GlobalRepository::getRandomParticle()
     int randomPosition = qrand() % ((high + 1) - low) + low;
     return nonDominatedParticlesList.at(randomPosition);
 }
+
+
+Particle * GlobalRepository::getLeader()
+{
+    Particle * p = new Particle(0,4);
+    return p;
+}

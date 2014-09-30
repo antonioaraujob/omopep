@@ -54,6 +54,13 @@
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
+        <item row="6" column="1">
+         <widget class="QCheckBox" name="checkBoxGrid">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="1">
          <widget class="QLineEdit" name="lineEditSocialParameter">
           <property name="text">
@@ -61,17 +68,10 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QLineEdit" name="lineEditParticlesParameter">
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="lineEditIterationsParameter">
           <property name="text">
-           <string>20</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="lineEditInertiaParameter">
-          <property name="text">
-           <string>0.8</string>
+           <string>10</string>
           </property>
          </widget>
         </item>
@@ -82,27 +82,6 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Velocidad máxima</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Parámetro cognitivo</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Parámetro social</string>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="1">
          <widget class="QLineEdit" name="lineEditMaxSpeedParameter">
           <property name="text">
@@ -110,10 +89,10 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_6">
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lineEditInertiaParameter">
           <property name="text">
-           <string>Número de partículas</string>
+           <string>0.8</string>
           </property>
          </widget>
         </item>
@@ -124,6 +103,48 @@
           </property>
          </widget>
         </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Número de partículas</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lineEditParticlesParameter">
+          <property name="text">
+           <string>20</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Utilizar Grid de seleccion</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Parámetro cognitivo</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Velocidad máxima</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Parámetro social</string>
+          </property>
+         </widget>
+        </item>
         <item row="5" column="0">
          <widget class="QLabel" name="label_7">
           <property name="text">
@@ -131,8 +152,15 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
-         <widget class="QLineEdit" name="lineEditIterationsParameter">
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Numero de subintervalos</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLineEdit" name="lineEditSubintervals">
           <property name="text">
            <string>10</string>
           </property>

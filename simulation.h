@@ -267,6 +267,11 @@ public:
      */
     void updateGrid(QList<Particle *> globalRepositoryList);
 
+    /**
+     * @brief Retorna un lider de acuerdo a la modificacion del algoritmo con el uso de la rejilla
+     */
+    Particle *getLeader();
+
 };
 
 #endif // SIMULATION_H

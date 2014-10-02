@@ -206,6 +206,7 @@ int Grid::getF1SubintervalIndex(double value)
     for (int i = 0; i < subIntervalListF1.count(); i++)
     {
         if (i == subIntervalListF1.count()-1){
+            qDebug("subIntervalListF1.count()-1");
             if (subIntervalListF1.at(i)->belongsToSubinterval(value, true))
             {
                 index = i;
@@ -213,6 +214,7 @@ int Grid::getF1SubintervalIndex(double value)
             }
         }else
         {
+            qDebug("subIntervalListF1.count()");
             if (subIntervalListF1.at(i)->belongsToSubinterval(value))
             {
                 index = i;

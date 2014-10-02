@@ -32,6 +32,14 @@ private:
      */
     int f2;
 
+    /**
+     * @brief Contador de particulas personal y vecinos
+     *
+     * Almacena el numero de particulas de la celda mas la cantidad de particulas
+     * de las celdas vecinas izquierda y derecha
+     */
+    int neighboursParticlesCount;
+
 public:
 
     /**
@@ -45,9 +53,9 @@ public:
     ~Cell();
 
     /**
-     * @brief Retorna el número de individuos de la celda
+     * @brief Retorna el número de particulas de la celda
      *
-     * @return Número de individuos de la celda
+     * @return Número de particulas de la celda
      */
     int getCount();
 
@@ -92,6 +100,25 @@ public:
     * @return valor del indice del subintervalo de F1 dentro de la rejilla
     */
     int getSubintervalF2();
+
+    /**
+     * @brief Retorna una particula aletoria de la celda
+     * @return una particula aletoria de la celda
+     */
+    Particle * getRandomParticle();
+
+    /**
+     * @brief Asigna el contador de particulas local y de vecinos
+     * @param count contador a asignar
+     */
+    void setNeighboursParticlesCount(int count);
+
+    /**
+     * @brief Retorna el contador de particulas local y de vecinos
+     * @return el contador de particulas local y de vecinos
+     */
+    int getNeighboursParticlesCount();
+
 
 };
 

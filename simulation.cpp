@@ -28,6 +28,17 @@ inline static bool xLessThanF2(Particle *p1, Particle *p2)
     return p1->getPerformanceLatency() < p2->getPerformanceLatency();
 }
 
+/**
+ * @brief Funcion de comparacion de celdas de particulas de la grid
+ * @param c1 celda 1 a comparar
+ * @param c2 celda 2 a comparar
+ * @return
+ */
+inline static bool cellLessThan(Cell * c1, Cell *c2)
+{
+    return c1->getCount() < c2->getCount();
+}
+
 
 /**
  * @brief Define e inicializa el miembro estatico individualIdCounter
@@ -457,4 +468,43 @@ void Simulation::updateGrid(QList<Particle *> globalRepositoryList)
             nGrid->addParticleToGrid(auxParticle);
         }
     }
+}
+
+
+Particle * Simulation::getLeader()
+{
+    QList<Cell *> populatedCells = nGrid->getPopulatedCellList();
+
+    int cellCount = 0;
+    int leftCellCount = 0;
+    int rightCellCount = 0;
+    int totalCellParticles = 0;
+
+    for (int i = 0; i < populatedCells.count(); i++)
+    {
+        Cell * cell = populatedCells.at(i);
+        cellCount = cell->getCount();
+
+        // obtener el contador de la celda de la izquierda
+
+        // obtener el contador de la celda de la derecha
+
+
+        // numero total de particulas para el grupo
+        totalCellParticles = leftCellCount + cellCount + rightCellCount;
+        cell->setNeighboursParticlesCount(totalCellParticles);
+    }
+
+
+    // ordenar la lista de particulas por grupo de celda de menor a mayor
+    qSort(populatedCells.begin(), populatedCells.end(), cellLessThan);
+
+    /*
+    if (populatedCells.count() == 1)
+    {
+        return populatedCells.at(0)->getRandomParticle();
+    }
+
+    if (cellGroupParticleList.at(0) != cellGroupParticleList.at(0))
+    */
 }

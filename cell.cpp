@@ -44,6 +44,9 @@ Cell& Cell::operator = (const Cell &cell)
     if (&cell != this)
     {
         this->cellParticleList = cell.cellParticleList;
+        this->f1 = cell.f1;
+        this->f2 = cell.f2;
+        this->neighboursParticlesCount = cell.neighboursParticlesCount;
     }
     return *this;
 }

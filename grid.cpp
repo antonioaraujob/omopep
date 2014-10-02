@@ -6,6 +6,19 @@
 #include<iostream>
 using namespace std;
 
+/**
+ * @brief Funcion de comparacion de celdas de particulas de la grid
+ * @param c1 celda 1 a comparar
+ * @param c2 celda 2 a comparar
+ * @return
+ */
+inline static bool cellLessThan(Cell * c1, Cell *c2)
+{
+    //return c1->getCount() < c2->getCount();
+    return c1->getNeighboursParticlesCount() < c2->getNeighboursParticlesCount();
+
+}
+
 
 Grid::Grid(int subIntervals, double lF1, double uF1, double lF2, double uF2 /*NormativePhenotypicPart * nPhenotypicPart*/)
 {
@@ -330,6 +343,107 @@ bool Grid::isCellInCellList(int indexF1, int indexF2)
     return false;
 }
 
+Particle * Grid::getLeader()
+{
+    QList<Cell *> populatedCells = getPopulatedCellList();
+
+    Particle * particleToReturn;
+
+    int cellCount = 0;
+    int leftAndRightCellCount = 0;
+    int totalCellCount = 0;
+
+    for (int i = 0; i < populatedCells.count(); i++)
+    {
+        Cell * cell = populatedCells.at(i);
+        cellCount = cell->getCount();
+
+        // obtener el contador de la celda de la izquierda
+        leftAndRightCellCount = getLeftAndRightCellCount(cell);
+
+        // numero total de particulas para el grupo
+        totalCellCount = cellCount + leftAndRightCellCount;
+        cell->setNeighboursParticlesCount(totalCellCount);
+    }
+    // ordenar la lista de particulas por grupo de celda de menor a mayor
+    qSort(populatedCells.begin(), populatedCells.end(), cellLessThan);
+
+    // lista con un solo elemento
+    if (populatedCells.count() == 1)
+    {
+        particleToReturn = populatedCells.at(0)->getRandomParticle();
+    }
+    else // lista con dos o mas elementos
+    {
+        int cellToGetParticle = getIndexOfCellToSelectParticle(populatedCells);
+        particleToReturn = populatedCells.at(cellToGetParticle)->getRandomParticle();
+    }
+
+    return particleToReturn;
+}
+
+int Grid::getIndexOfCellToSelectParticle(QList<Cell *> populatedCells)
+{
+    Cell * first;
+    Cell *  next;
+    int indexNext = 0;
+
+    first = populatedCells.at(0);
+
+    QList<int> sameCountList;
+    sameCountList.append(0);
+
+    while(true)
+    {
+        indexNext++;
+        // ultimo elemento de la lista
+        if ( (indexNext) == populatedCells.count() )
+        {
+            break;
+        }
+        next = populatedCells.at(indexNext);
+        if (first->getNeighboursParticlesCount() == next->getNeighboursParticlesCount())
+        {
+            sameCountList.append(indexNext);
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return getRandom(0, sameCountList.count()-1);
+}
+
+
+
+int Grid::getRandom(int l, int h)
+{
+    int low = l;
+    int high = h;
+    return qrand() % ((high + 1) - low) + low;
+}
+
+
+int Grid::getLeftAndRightCellCount(Cell * cell)
+{
+    int count = 0;
+    // chequear si f1 es 0
+    if (cell->getSubintervalF1() == 0)
+    {
+        count = getCount(cell->getSubintervalF1()+1, cell->getSubintervalF2());
+    }// chequear si f1 es ultimo subintervalo
+    else if (cell->getSubintervalF2() == (subIntervalNumber-1))
+    {
+        count = getCount(cell->getSubintervalF1()-1, cell->getSubintervalF2());
+    }
+    else //  (1 <= f1 <= subIntervalNumber-2)
+    {
+        count = getCount(cell->getSubintervalF1()-1, cell->getSubintervalF2()) +
+                getCount(cell->getSubintervalF1()+1, cell->getSubintervalF2());
+    }
+    return count;
+}
 
 
 

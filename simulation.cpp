@@ -36,7 +36,9 @@ inline static bool xLessThanF2(Particle *p1, Particle *p2)
  */
 inline static bool cellLessThan(Cell * c1, Cell *c2)
 {
-    return c1->getCount() < c2->getCount();
+    //return c1->getCount() < c2->getCount();
+    return c1->getNeighboursParticlesCount() < c2->getNeighboursParticlesCount();
+
 }
 
 
@@ -183,8 +185,8 @@ void Simulation::updateParticles()
         // seleccionar el mejor global
         if (selectionModified)
         {
-            //bestGlobal = gRepository->getLeader();
-            bestGlobal = gRepository->getRandomParticle();
+            bestGlobal = nGrid->getLeader();
+            //bestGlobal = gRepository->getRandomParticle();
         }
         else
         {
@@ -475,10 +477,12 @@ Particle * Simulation::getLeader()
 {
     QList<Cell *> populatedCells = nGrid->getPopulatedCellList();
 
+    Particle * particleToReturn;
+
     int cellCount = 0;
     int leftCellCount = 0;
     int rightCellCount = 0;
-    int totalCellParticles = 0;
+    int totalCellCount = 0;
 
     for (int i = 0; i < populatedCells.count(); i++)
     {
@@ -486,25 +490,73 @@ Particle * Simulation::getLeader()
         cellCount = cell->getCount();
 
         // obtener el contador de la celda de la izquierda
+        //leftCellCount = getLeftCellCount(cell);
+
 
         // obtener el contador de la celda de la derecha
+        //rightCellCount = getRightCellCount(cell);
 
 
         // numero total de particulas para el grupo
-        totalCellParticles = leftCellCount + cellCount + rightCellCount;
-        cell->setNeighboursParticlesCount(totalCellParticles);
+        totalCellCount = leftCellCount + cellCount + rightCellCount;
+        cell->setNeighboursParticlesCount(totalCellCount);
     }
-
-
     // ordenar la lista de particulas por grupo de celda de menor a mayor
     qSort(populatedCells.begin(), populatedCells.end(), cellLessThan);
 
-    /*
+    // lista con un solo elemento
     if (populatedCells.count() == 1)
     {
-        return populatedCells.at(0)->getRandomParticle();
+        particleToReturn = populatedCells.at(0)->getRandomParticle();
+    }
+    else // lista con dos o mas elementos
+    {
+        int cellToGetParticle = getIndexOfCellToSelectParticle(populatedCells);
+        particleToReturn = populatedCells.at(cellToGetParticle)->getRandomParticle();
     }
 
-    if (cellGroupParticleList.at(0) != cellGroupParticleList.at(0))
-    */
+    return particleToReturn;
 }
+
+int Simulation::getIndexOfCellToSelectParticle(QList<Cell *> populatedCells)
+{
+    Cell * first;
+    Cell *  next;
+    int indexNext = 0;
+
+    first = populatedCells.at(0);
+
+    QList<int> sameCountList;
+    sameCountList.append(0);
+
+    while(true)
+    {
+        indexNext++;
+        // ultimo elemento de la lista
+        if ( (indexNext) == populatedCells.count() )
+        {
+            break;
+        }
+        next = populatedCells.at(indexNext);
+        if (first->getNeighboursParticlesCount() == next->getNeighboursParticlesCount())
+        {
+            sameCountList.append(indexNext);
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return getRandom(0, sameCountList.count()-1);
+}
+
+
+
+int Simulation::getRandom(int l, int h)
+{
+    int low = l;
+    int high = h;
+    return qrand() % ((high + 1) - low) + low;
+}
+

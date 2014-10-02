@@ -172,6 +172,27 @@ public:
      */
     bool isCellInCellList(int indexF1, int indexF2);
 
+    /**
+     * @brief Retorna un lider de acuerdo a la modificacion del algoritmo con el uso de la rejilla
+     */
+    Particle * getLeader();
+
+    int getIndexOfCellToSelectParticle(QList<Cell *> populatedCells);
+
+    /**
+     * @brief Retorna un numero aleatorio entero entre el intervalo pasado como argumento
+     * @param l valor inferior del rango
+     * @param h valor superior del rango
+     * @return numero aleatorio entero entre el intervalo pasado como argumento
+     */
+    int getRandom(int l, int h);
+
+    int getLeftAndRightCellCount(Cell * cell);
+
+
+
+
+
 
 };
 

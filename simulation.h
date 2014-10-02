@@ -123,6 +123,14 @@ private:
      */
     bool selectionModified;
 
+
+    /**
+     * @brief retorna el indice de la celda que se debe usar para seleccionar una particula
+     * @param populatedCells lista de celdas
+     * @return indice de la celda que se debe usar para seleccionar una particula
+     */
+    int getIndexOfCellToSelectParticle(QList<Cell *> populatedCells);
+
 public:
 
     /**
@@ -272,6 +280,13 @@ public:
      */
     Particle *getLeader();
 
+    /**
+     * @brief Retorna un numero aleatorio entero entre el intervalo pasado como argumento
+     * @param l valor inferior del rango
+     * @param h valor superior del rango
+     * @return numero aleatorio entero entre el intervalo pasado como argumento
+     */
+    int getRandom(int l, int h);
 };
 
 #endif // SIMULATION_H

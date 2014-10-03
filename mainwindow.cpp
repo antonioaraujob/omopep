@@ -39,13 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEditMaxSpeedParameter->setValidator(validatorSpeedParameter);
     ui->lineEditMaxSpeedParameter->setToolTip("[1..9]");
 
-    QValidator * validatorParticlesParameter = new QIntValidator(1, 40, this);
+    QValidator * validatorParticlesParameter = new QIntValidator(1, 400, this);
     ui->lineEditParticlesParameter->setValidator(validatorParticlesParameter);
-    ui->lineEditParticlesParameter->setToolTip("[1..40]");
+    ui->lineEditParticlesParameter->setToolTip("[1..400]");
 
-    QValidator * validatorIterationsParameter = new QIntValidator(1, 100, this);
+    QValidator * validatorIterationsParameter = new QIntValidator(1, 1000, this);
     ui->lineEditIterationsParameter->setValidator(validatorIterationsParameter);
-    ui->lineEditIterationsParameter->setToolTip("[1..100]");
+    ui->lineEditIterationsParameter->setToolTip("[1..1000]");
 
     QValidator * validatorSubintervalsParameter = new QIntValidator(2, 10, this);
     ui->lineEditSubintervals->setValidator(validatorSubintervalsParameter);

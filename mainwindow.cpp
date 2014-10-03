@@ -90,6 +90,7 @@ void MainWindow::executeAlgorithm()
     // inicializar las particulas
     // (la inicializacion de los repositorios (global y locales) tambien se ejecuta en este paso)
     simulation->initializeParticles();
+    qDebug("***********particulas inicializadas**************");
 
 
     if (simulation->getSelectionModified())
@@ -97,6 +98,7 @@ void MainWindow::executeAlgorithm()
         qDebug("****************************simulation->getSelectionModified()***************");
         // inicializar la grid
         simulation->intializeGrid();
+        qDebug("***********grid inicializada**************");
     }
 
 
@@ -107,6 +109,7 @@ void MainWindow::executeAlgorithm()
     {
         // actualizar las particulas
         simulation->updateParticles();
+        qDebug("***********particulas actualizadas**************");
 
 
         // evaluar las particulas

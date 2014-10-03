@@ -93,8 +93,8 @@ Grid::Grid(int subIntervals, double lF1, double uF1, double lF2, double uF2 /*No
 
 
     // construir los intervalos de F1 y de F2
-    buildSubintervalsF1(lF1, uF1);
-    buildSubintervalsF2(lF2, uF2);
+    buildSubintervalsF1(lF1, uF1+0.1);
+    buildSubintervalsF2(lF2, uF2+0.1);
 }
 
 
@@ -353,17 +353,20 @@ Particle * Grid::getLeader()
     int leftAndRightCellCount = 0;
     int totalCellCount = 0;
 
+    Cell * cell;
     for (int i = 0; i < populatedCells.count(); i++)
     {
-        Cell * cell = populatedCells.at(i);
+        cell = populatedCells.at(i);
         cellCount = cell->getCount();
 
-        // obtener el contador de la celda de la izquierda
+        // obtener el contador de las celdas a la izquierda y a la derecha
         leftAndRightCellCount = getLeftAndRightCellCount(cell);
 
         // numero total de particulas para el grupo
         totalCellCount = cellCount + leftAndRightCellCount;
         cell->setNeighboursParticlesCount(totalCellCount);
+        populatedCells.replace(i, cell);
+
     }
     // ordenar la lista de particulas por grupo de celda de menor a mayor
     qSort(populatedCells.begin(), populatedCells.end(), cellLessThan);
@@ -433,7 +436,7 @@ int Grid::getLeftAndRightCellCount(Cell * cell)
     {
         count = getCount(cell->getSubintervalF1()+1, cell->getSubintervalF2());
     }// chequear si f1 es ultimo subintervalo
-    else if (cell->getSubintervalF2() == (subIntervalNumber-1))
+    else if (cell->getSubintervalF1() == (subIntervalNumber-1))
     {
         count = getCount(cell->getSubintervalF1()-1, cell->getSubintervalF2());
     }

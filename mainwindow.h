@@ -54,6 +54,10 @@ public:
      */
     void setupCustomPlot(QCustomPlot *customPlot);
 
+    void setupCustomPlot2(QCustomPlot *customPlot);
+
+    void plotSolutions();
+
 
 private:
     Ui::MainWindow *ui;
@@ -63,10 +67,23 @@ private:
      */
     Simulation * simulation;
 
+    /**
+     * @brief Lista de soluciones no dominadas resultantes de la ejecucion del algoritmo generico PSO
+     */
+    QList<Particle *> genericAlgorithmSolutions;
+
+    /**
+     * @brief Lista de soluciones no dominadas resultantes de la ejecucion del algoritmo modicicado PSO
+     *
+     * En la modificacion se esta utilizando
+     */
+    QList<Particle *> modificatedAlgorithmSolutions;
+
+
 public slots:
 
     /**
-     * @brief Slot para ejecutar el algoritmo cultural al presionar un boton en
+     * @brief Slot para ejecutar el algoritmo PSO al presionar un boton en
      * la interfaz grafica
      */
     void executeAlgorithm();
@@ -77,6 +94,20 @@ public slots:
      * @param state
      */
     void activateGridSelection(int state);
+
+    /**
+     * @brief Slot para habilitar el boton de comparacion de los algoritmos genericos y modificado
+     * @param state
+     */
+    void activateComparationButton(int state);
+
+    /**
+     * @brief Slot para ejecutar el algoritmo PSO modificado al presionar un boton en la
+     * interfaz grafica
+     */
+    void compareAlgorithms();
+
+
 
 };
 

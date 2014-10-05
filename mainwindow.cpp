@@ -52,10 +52,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEditSubintervals->setToolTip("[2..10]");
 
     connect(ui->pushButtonExecute, SIGNAL(clicked()), this, SLOT(executeAlgorithm()));
+    connect(ui->pushButtonCompareAlgorithms, SIGNAL(clicked()), this, SLOT(compareAlgorithms()));
 
     connect(ui->checkBoxGrid, SIGNAL(stateChanged(int)), this, SLOT(activateGridSelection(int)));
     ui->label_9->setEnabled(false);
     ui->lineEditSubintervals->setEnabled(false);
+
+    connect(ui->checkBoxComparation, SIGNAL(stateChanged(int)), this, SLOT(activateComparationButton(int)));
+    ui->pushButtonCompareAlgorithms->setEnabled(false);
+
 }
 
 MainWindow::~MainWindow()
@@ -66,7 +71,6 @@ MainWindow::~MainWindow()
 void MainWindow::executeAlgorithm()
 {
     qDebug("...MainWindow::executeAlgorithm()");
-
 
     if (!validateFields())
     {
@@ -129,8 +133,36 @@ void MainWindow::executeAlgorithm()
     // poblar la lista de individuos no dominados del archivo externo
     populateListView();
 
+    if (simulation->getSelectionModified())
+    {
+        modificatedAlgorithmSolutions = simulation->getGlobalRepository()->getRepositoryList();
+    }
+    else
+    {
+        genericAlgorithmSolutions = simulation->getGlobalRepository()->getRepositoryList();
+    }
+
     // generar el grafico
-    setupCustomPlot(ui->customPlot);
+    plotSolutions();
+
+/*
+    if (ui->checkBoxComparation->isChecked())
+    {
+        if (firstExecution)
+        {
+            firstExecution = false;
+        }
+        else
+        {
+            setupCustomPlot2(ui->customPlot);
+        }
+
+    }
+    else
+    {
+        setupCustomPlot(ui->customPlot);
+    }
+*/
 
 }
 
@@ -208,7 +240,7 @@ void MainWindow::populateListView()
 
 void MainWindow::setupCustomPlot(QCustomPlot *customPlot)
 {
-
+/*
     int count = simulation->getGlobalRepository()->getRepositoryList().count();
     QVector<double> discovery(count), latency(count);
 
@@ -223,15 +255,59 @@ void MainWindow::setupCustomPlot(QCustomPlot *customPlot)
         latency[i] = particle->getPerformanceLatency();
         i++;
     }
+*/
 
+    customPlot->clearGraphs();
+
+    Particle * particle;
+    int count = genericAlgorithmSolutions.count();
+    QVector<double> discovery(count), latency(count);
+    for (int i = 0; i < count; i++)
+    {
+        particle = genericAlgorithmSolutions.at(i);
+        discovery[i] = particle->getPerformanceDiscovery();
+        latency[i] = particle->getPerformanceLatency();
+    }
+
+
+    int countModified = modificatedAlgorithmSolutions.count();
+    QVector<double> discoveryModified(countModified), latencyModified(countModified);
+    if (ui->checkBoxGrid->isChecked())
+    {
+        for (int i = 0; i < countModified; i++)
+        {
+            particle = modificatedAlgorithmSolutions.at(i);
+            discoveryModified[i] = particle->getPerformanceDiscovery();
+            latencyModified[i] = particle->getPerformanceLatency();
+        }
+    }
 
     // create graph and assign data to it:
     customPlot->addGraph();
     customPlot->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph
-    customPlot->graph(0)->setData(discovery, latency);
+
+    if (ui->checkBoxGrid->isChecked())
+    {
+        customPlot->graph(0)->setData(discoveryModified, latencyModified);
+    }
+    else
+    {
+        customPlot->graph(0)->setData(discovery, latency);
+    }
 
     customPlot->graph(0)->setLineStyle(QCPGraph::lsLine);
     customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::red, 4));
+
+
+    if (ui->checkBoxComparation->isChecked())
+    //if (modified)
+    {
+        customPlot->addGraph();
+        customPlot->graph(1)->setPen(QPen(Qt::green)); // line color green for second graph
+        customPlot->graph(1)->setData(discoveryModified, latencyModified);
+        customPlot->graph(1)->setLineStyle(QCPGraph::lsLine);
+        customPlot->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::yellow, 4));
+    }
 
     // give the axes some labels:
     customPlot->xAxis->setLabel("Descubierta");
@@ -286,6 +362,76 @@ void MainWindow::setupCustomPlot(QCustomPlot *customPlot)
 
 }
 
+void MainWindow::setupCustomPlot2(QCustomPlot *customPlot)
+{
+/*
+    int count = simulation->getGlobalRepository()->getRepositoryList().count();
+    QVector<double> discovery(count), latency(count);
+
+    int i = 0;
+
+    Particle * particle;
+    //for (int z=simulation->getExternalFile()->getExternalFileList().count()-1; z>=0; z-- )
+    for (int z=simulation->getGlobalRepository()->getRepositoryList().count()-1; z>=0; z-- )
+    {
+        particle = simulation->getGlobalRepository()->getRepositoryList().at(z);
+        discovery[i] = particle->getPerformanceDiscovery();
+        latency[i] = particle->getPerformanceLatency();
+        i++;
+    }
+*/
+    Particle * particle;
+    int count = genericAlgorithmSolutions.count();
+    QVector<double> discovery(count), latency(count);
+    for (int i = 0; i < count; i++)
+    {
+        particle = genericAlgorithmSolutions.at(i);
+        discovery[i] = particle->getPerformanceDiscovery();
+        latency[i] = particle->getPerformanceLatency();
+    }
+
+
+    int countModified = modificatedAlgorithmSolutions.count();
+    QVector<double> discoveryModified(countModified), latencyModified(countModified);
+    //if (ui->checkBoxComparation->isChecked())
+    //if (comparation)
+    //{
+        for (int i = 0; i < countModified; i++)
+        {
+            particle = modificatedAlgorithmSolutions.at(i);
+            discoveryModified[i] = particle->getPerformanceDiscovery();
+            latencyModified[i] = particle->getPerformanceLatency();
+        }
+    //}
+
+    // create graph and assign data to it:
+    customPlot->addGraph();
+    customPlot->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph
+    customPlot->graph(0)->setData(discovery, latency);
+    customPlot->graph(0)->setLineStyle(QCPGraph::lsLine);
+    customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::red, 4));
+
+    customPlot->addGraph();
+    customPlot->graph(1)->setPen(QPen(Qt::green)); // line color green for second graph
+    customPlot->graph(1)->setData(discoveryModified, latencyModified);
+    customPlot->graph(1)->setLineStyle(QCPGraph::lsLine);
+    customPlot->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::black, 4));
+
+    // give the axes some labels:
+    customPlot->xAxis->setLabel("Descubierta");
+    customPlot->yAxis->setLabel("Latencia");
+    // set axes ranges, so we see all data:
+    customPlot->xAxis->setRange(0, 75);
+    customPlot->yAxis->setRange(0, 300);
+
+    customPlot->yAxis->grid()->setSubGridVisible(true);
+
+    ui->customPlot->replot();
+
+    // show legend:
+    //customPlot->legend->setVisible(true);
+}
+
 void MainWindow::activateGridSelection(int state)
 {
     if (state == 0)
@@ -297,5 +443,63 @@ void MainWindow::activateGridSelection(int state)
     {
         ui->label_9->setEnabled(true);
         ui->lineEditSubintervals->setEnabled(true);
+    }
+}
+
+void MainWindow::activateComparationButton(int state)
+{
+    if (state == 0)
+    {
+        ui->pushButtonCompareAlgorithms->setEnabled(false);
+
+        ui->pushButtonExecute->setEnabled(true);
+
+        ui->checkBoxGrid->setEnabled(true);
+        ui->checkBoxGrid->setChecked(false);
+
+        //ui->label_9->setEnabled(true);
+        //ui->lineEditSubintervals->setEnabled(true);
+    }
+    else if(state == 2)
+    {
+        ui->pushButtonCompareAlgorithms->setEnabled(true);
+
+        ui->pushButtonExecute->setEnabled(false);
+
+        ui->checkBoxGrid->setEnabled(false);
+        ui->checkBoxGrid->setChecked(false);
+        ui->label_9->setEnabled(false);
+        ui->lineEditSubintervals->setEnabled(false);
+    }
+}
+
+void MainWindow::compareAlgorithms()
+{
+
+    ui->checkBoxGrid->setChecked(false);
+    executeAlgorithm();
+
+
+    QMessageBox msg;
+    msg.setText("Termino el algoritmo generico");
+    //msg.exec();
+
+    ui->checkBoxGrid->setChecked(true);
+    executeAlgorithm();
+    ui->checkBoxGrid->setChecked(false);
+
+    msg.setText("Termino el algoritmo modificado");
+    //msg.exec();
+
+
+    setupCustomPlot2(ui->customPlot);
+}
+
+
+void MainWindow::plotSolutions()
+{
+    if (!ui->checkBoxComparation->isChecked())
+    {
+        setupCustomPlot(ui->customPlot);
     }
 }

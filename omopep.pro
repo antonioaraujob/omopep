@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     qcustomplot.cpp \
     cell.cpp \
     gridsubinterval.cpp \
-    grid.cpp
+    grid.cpp \
+    executionthread.cpp
 
 HEADERS  += mainwindow.h \
     simulation.h \
@@ -34,7 +35,8 @@ HEADERS  += mainwindow.h \
     qcustomplot.h \
     cell.h \
     gridsubinterval.h \
-    grid.h
+    grid.h \
+    executionthread.h
 
 
 FORMS    += mainwindow.ui

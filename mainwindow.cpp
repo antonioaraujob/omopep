@@ -61,6 +61,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->checkBoxComparation, SIGNAL(stateChanged(int)), this, SLOT(activateComparationButton(int)));
     ui->pushButtonCompareAlgorithms->setEnabled(false);
 
+    ui->label_PSO_generico->setVisible(false);
+    ui->psoGenericNumber->setVisible(false);
+    ui->label_PSO_modificado->setVisible(false);
+    ui->psoModifiedNumber->setVisible(false);
+    ui->psoGenericTime->setVisible(false);
+    ui->psoModifiedTime->setVisible(false);
+    ui->label_tiempo_generico->setVisible(false);
+    ui->label_tiempo_modificado->setVisible(false);
+
 }
 
 MainWindow::~MainWindow()
@@ -257,6 +266,16 @@ void MainWindow::setupCustomPlot(QCustomPlot *customPlot)
     }
 */
 
+    //customPlot->setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom)); // period as decimal separator and comma as thousand separator
+    customPlot->legend->setVisible(true);
+    QFont legendFont = font();  // start out with MainWindow's font..
+    legendFont.setPointSize(9); // and make a bit smaller for legend
+    customPlot->legend->setFont(legendFont);
+    customPlot->legend->setBrush(QBrush(QColor(255,255,255,230)));
+    // by default, the legend is in the inset layout of the main axis rect. So this is how we access it to change legend placement:
+    customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignBottom|Qt::AlignRight);
+
+
     customPlot->clearGraphs();
 
     Particle * particle;
@@ -284,14 +303,17 @@ void MainWindow::setupCustomPlot(QCustomPlot *customPlot)
 
     // create graph and assign data to it:
     customPlot->addGraph();
+
     customPlot->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph
 
     if (ui->checkBoxGrid->isChecked())
     {
+        customPlot->graph(0)->setName("PSO modificado");
         customPlot->graph(0)->setData(discoveryModified, latencyModified);
     }
     else
     {
+        customPlot->graph(0)->setName("PSO generico");
         customPlot->graph(0)->setData(discovery, latency);
     }
 
@@ -380,6 +402,18 @@ void MainWindow::setupCustomPlot2(QCustomPlot *customPlot)
         i++;
     }
 */
+
+    customPlot->legend->setVisible(true);
+    QFont legendFont = font();  // start out with MainWindow's font..
+    legendFont.setPointSize(9); // and make a bit smaller for legend
+    customPlot->legend->setFont(legendFont);
+    customPlot->legend->setBrush(QBrush(QColor(255,255,255,230)));
+    // by default, the legend is in the inset layout of the main axis rect. So this is how we access it to change legend placement:
+    customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignBottom|Qt::AlignRight);
+
+    customPlot->clearGraphs();
+
+
     Particle * particle;
     int count = genericAlgorithmSolutions.count();
     QVector<double> discovery(count), latency(count);
@@ -410,12 +444,14 @@ void MainWindow::setupCustomPlot2(QCustomPlot *customPlot)
     customPlot->graph(0)->setData(discovery, latency);
     customPlot->graph(0)->setLineStyle(QCPGraph::lsLine);
     customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::red, 4));
+    customPlot->graph(0)->setName("PSO generico");
 
     customPlot->addGraph();
     customPlot->graph(1)->setPen(QPen(Qt::green)); // line color green for second graph
     customPlot->graph(1)->setData(discoveryModified, latencyModified);
     customPlot->graph(1)->setLineStyle(QCPGraph::lsLine);
     customPlot->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::black, 4));
+    customPlot->graph(1)->setName("PSO modificado");
 
     // give the axes some labels:
     customPlot->xAxis->setLabel("Descubierta");
@@ -425,6 +461,8 @@ void MainWindow::setupCustomPlot2(QCustomPlot *customPlot)
     customPlot->yAxis->setRange(0, 300);
 
     customPlot->yAxis->grid()->setSubGridVisible(true);
+
+
 
     ui->customPlot->replot();
 
@@ -459,6 +497,21 @@ void MainWindow::activateComparationButton(int state)
 
         //ui->label_9->setEnabled(true);
         //ui->lineEditSubintervals->setEnabled(true);
+
+        ui->labelExternalFile->setVisible(true);
+        ui->labelNonDominatedNUmber->setVisible(true);
+        ui->listViewBestNonDominatedParticles->setVisible(true);
+
+        ui->label_PSO_generico->setVisible(false);
+        ui->psoGenericNumber->setVisible(false);
+        ui->label_PSO_modificado->setVisible(false);
+        ui->psoModifiedNumber->setVisible(false);
+
+        ui->psoGenericTime->setVisible(false);
+        ui->psoModifiedTime->setVisible(false);
+        ui->label_tiempo_generico->setVisible(false);
+        ui->label_tiempo_modificado->setVisible(false);
+
     }
     else if(state == 2)
     {
@@ -470,14 +523,43 @@ void MainWindow::activateComparationButton(int state)
         ui->checkBoxGrid->setChecked(false);
         ui->label_9->setEnabled(false);
         ui->lineEditSubintervals->setEnabled(false);
+
+        ui->labelExternalFile->setVisible(false);
+        ui->labelNonDominatedNUmber->setVisible(false);
+        ui->listViewBestNonDominatedParticles->setVisible(false);
+
+        ui->label_PSO_generico->setVisible(true);
+        ui->psoGenericNumber->setVisible(true);
+        ui->label_PSO_modificado->setVisible(true);
+        ui->psoModifiedNumber->setVisible(true);
+
+        ui->psoGenericTime->setVisible(true);
+        ui->psoModifiedTime->setVisible(true);
+
+        ui->label_tiempo_generico->setVisible(true);
+        ui->label_tiempo_modificado->setVisible(true);
+
     }
 }
 
 void MainWindow::compareAlgorithms()
 {
 
+    //ui->labelExternalFile->setVisible(false);
+    //ui->labelNonDominatedNUmber->setVisible(false);
+    //ui->listViewBestNonDominatedParticles->setVisible(false);
+
+
     ui->checkBoxGrid->setChecked(false);
+
+    QTime timer;
+    timer.start();
+
     executeAlgorithm();
+
+    int runtimeGeneric = timer.elapsed(); //gets the runtime in ms
+    ui->psoGenericTime->setText(QString::number(runtimeGeneric)+" ms");
+
 
 
     QMessageBox msg;
@@ -485,7 +567,13 @@ void MainWindow::compareAlgorithms()
     //msg.exec();
 
     ui->checkBoxGrid->setChecked(true);
+
+
+    timer.start();
     executeAlgorithm();
+    int runtimeModified = timer.elapsed(); //gets the runtime in ms
+    ui->psoModifiedTime->setText(QString::number(runtimeModified)+" ms");
+
     ui->checkBoxGrid->setChecked(false);
 
     msg.setText("Termino el algoritmo modificado");
@@ -493,6 +581,11 @@ void MainWindow::compareAlgorithms()
 
 
     setupCustomPlot2(ui->customPlot);
+
+
+    ui->psoGenericNumber->setText(QString::number(genericAlgorithmSolutions.count()));
+    ui->psoModifiedNumber->setText(QString::number(modificatedAlgorithmSolutions.count()));
+
 }
 
 

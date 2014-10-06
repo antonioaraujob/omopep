@@ -260,7 +260,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Numero de particulas PSO Generico:</string>
+       <string>Numero de particulas AC Generico:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_PSO_modificado">
@@ -273,7 +273,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Numero de particulas PSO Modificado:</string>
+       <string>Numero de particulas ACsss Modificado:</string>
       </property>
      </widget>
      <widget class="QLabel" name="psoGenericNumber">

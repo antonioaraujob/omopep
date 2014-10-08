@@ -132,7 +132,7 @@ void ParticleRepository::addNonDominatedParticle(Particle * particle)
             {
                 if (localList.at(k)->getParticleId() == particleIdToRemove.at(j))
                 {
-                    localList.removeAt(j);
+                    localList.removeAt(k);
                     break;
                 }
             }

@@ -106,6 +106,13 @@ void MainWindow::executeAlgorithm()
     qDebug("***********particulas inicializadas**************");
 
 
+    // prueba de imprimir los individuos inicializados del repositorio global
+    //genericAlgorithmSolutions = simulation->getGlobalRepository()->getRepositoryList();
+    //plotSolutions();
+    //return;
+
+
+
     if (simulation->getSelectionModified())
     {
         qDebug("****************************simulation->getSelectionModified()***************");
@@ -304,21 +311,25 @@ void MainWindow::setupCustomPlot(QCustomPlot *customPlot)
     // create graph and assign data to it:
     customPlot->addGraph();
 
-    customPlot->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph
+
 
     if (ui->checkBoxGrid->isChecked())
     {
         customPlot->graph(0)->setName("PSO modificado");
         customPlot->graph(0)->setData(discoveryModified, latencyModified);
+        customPlot->graph(0)->setPen(QPen(Qt::green)); // line color blue for first graph
+        customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::black, 4));
     }
     else
     {
         customPlot->graph(0)->setName("PSO generico");
         customPlot->graph(0)->setData(discovery, latency);
+        customPlot->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph
+        customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::red, 4));
     }
 
     customPlot->graph(0)->setLineStyle(QCPGraph::lsLine);
-    customPlot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, Qt::red, 4));
+
 
 
     if (ui->checkBoxComparation->isChecked())
@@ -341,6 +352,8 @@ void MainWindow::setupCustomPlot(QCustomPlot *customPlot)
     customPlot->yAxis->grid()->setSubGridVisible(true);
 
     ui->customPlot->replot();
+
+
 
     // show legend:
     //customPlot->legend->setVisible(true);

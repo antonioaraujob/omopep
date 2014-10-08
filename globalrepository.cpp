@@ -43,7 +43,7 @@ void GlobalRepository::addNonDominatedParticle(Particle * p)
             {
                 if (nonDominatedParticlesList.at(k)->getParticleId() == particleIdToRemove.at(j))
                 {
-                    nonDominatedParticlesList.removeAt(j);
+                    nonDominatedParticlesList.removeAt(k);
                     break;
                 }
             }

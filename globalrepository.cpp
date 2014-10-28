@@ -15,6 +15,7 @@ QList<Particle *> GlobalRepository::getRepositoryList()
     return nonDominatedParticlesList;
 }
 
+/*
 void GlobalRepository::addNonDominatedParticle(Particle * p)
 {
     // verificar si la particula ya existe en el repositorio
@@ -51,6 +52,51 @@ void GlobalRepository::addNonDominatedParticle(Particle * p)
 
         // insertar la particula en el repositorio
         nonDominatedParticlesList.append(newParticle);
+        particleIdToRemove.clear();
+    }
+}
+*/
+
+void GlobalRepository::addNonDominatedParticle(Particle * p)
+{
+    // verificar si la particula ya existe en el repositorio
+    if (!isParticleInGlobalRepository(p))
+    {
+        Particle * newParticle = new Particle(*p);
+
+        //QList<int> particleIdToRemove;
+        QList<Particle *> particleIdToRemove;
+
+        Particle * particleTmp;
+
+        for (int i = 0; i < nonDominatedParticlesList.count(); i++)
+        {
+            particleTmp = nonDominatedParticlesList.at(i);
+
+            if (particleDominate(newParticle, particleTmp))
+            {
+                //particleIdToRemove.append(particleTmp->getParticleId());
+                particleIdToRemove.append(particleTmp);
+            }
+        }
+
+        // eliminar los individuos marcados del repositorio
+        for (int j = 0; j < particleIdToRemove.count(); j++)
+        {
+            for (int k = 0; k < nonDominatedParticlesList.count(); k++)
+            {
+                //if (nonDominatedParticlesList.at(k)->getParticleId() == particleIdToRemove.at(j))
+                if (nonDominatedParticlesList.at(k) == particleIdToRemove.at(j))
+                {
+                    nonDominatedParticlesList.removeAt(k);
+                    break;
+                }
+            }
+        }
+
+        // insertar la particula en el repositorio
+        nonDominatedParticlesList.append(newParticle);
+        particleIdToRemove.clear();
     }
 }
 

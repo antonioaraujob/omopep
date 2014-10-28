@@ -340,6 +340,14 @@ public:
 
 
     void resetChannelsUsedForFly();
+
+    /**
+     * @brief operator == Sobrecarga de operador de igualdad para particulas
+     * @return verdadero en caso de que las particulas son identicas
+     */
+    bool operator==(const Particle &) const;
+
+
 };
 
 

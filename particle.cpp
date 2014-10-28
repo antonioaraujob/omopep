@@ -645,7 +645,26 @@ void Particle::resetChannelsUsedForFly()
     }
 }
 
+bool Particle::operator==(const Particle &p) const
+{
 
+    for (int i=0; i<getNumberOfParameters(); i++)
+    {
+        if (getParameter(i) != p.getParameter(i))
+        {
+            return false;
+        }
+    }
+    int myId = particleId;
+
+    int otherId = p.particleId;
+
+    if ( myId != otherId )
+    {
+        return false;
+    }
+    return true;
+}
 
 
 

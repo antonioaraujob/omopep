@@ -111,7 +111,8 @@ void ParticleRepository::addNonDominatedParticle(Particle * particle)
 
         Particle * newParticle = new Particle(*particle);
 
-        QList<int> particleIdToRemove;
+        //QList<int> particleIdToRemove;
+        QList<Particle *> particleIdToRemove;
 
         Particle * particleTmp;
 
@@ -121,7 +122,8 @@ void ParticleRepository::addNonDominatedParticle(Particle * particle)
 
             if (particleDominate(newParticle, particleTmp))
             {
-                particleIdToRemove.append(particleTmp->getParticleId());
+                //particleIdToRemove.append(particleTmp->getParticleId());
+                particleIdToRemove.append(particleTmp);
             }
         }
 
@@ -130,7 +132,8 @@ void ParticleRepository::addNonDominatedParticle(Particle * particle)
         {
             for (int k = 0; k < localList.count(); k++)
             {
-                if (localList.at(k)->getParticleId() == particleIdToRemove.at(j))
+                //if (localList.at(k)->getParticleId() == particleIdToRemove.at(j))
+                if (localList.at(k) == particleIdToRemove.at(j))
                 {
                     localList.removeAt(k);
                     break;
